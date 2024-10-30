@@ -1,0 +1,720 @@
+
+window.onload = function() {
+  // Build a system
+  var url = window.location.search.match(/url=([^&]+)/);
+  if (url && url.length > 1) {
+    url = decodeURIComponent(url[1]);
+  } else {
+    url = window.location.origin;
+  }
+  var options = {
+  "swaggerDoc": {
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Entrega 3 - API E-Commerce + Documentación",
+      "description": "Felicitaciones por haber llegado hasta aquí, estamos ad portas de la fecha de entrega para la 3era parte del proyecto. A continuación, se documentan los aspectos mínimos que debiese contener tu Entrega 3, notar que con \"mínimos\" se refiere a que es la base de lo que se debe realizar, más no significa que todo debe ser exactamente igual. El objetivo final es poder entregar una API que sirva para desarrollar el frontend que la consuma, de modo tal de contar con todos los endpoints necesarios para la Entrega 4, documentados de forma adecuada.",
+      "version": "1"
+    },
+    "paths": {
+      "/login": {
+        "post": {
+          "summary": "Autentifica al usuario",
+          "description": "En base a un correo y contraseña, autentifica a un usuario retornándole una cookie y redireccionándole a otra URL",
+          "requestBody": {
+            "description": "Credenciales del usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "Correo del usuario",
+                      "example": "profe@udp.cl"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "Contraseña del usuario",
+                      "example": "12345t6clave"
+                    }
+                  }
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "302": {
+              "description": "Successful operation",
+              "headers": {
+                "Set-Cookie": {
+                  "schema": {
+                    "type": "string",
+                    "example": "token=ercv8m923d4io3kmlf;",
+                    "description": "Token de autentificación"
+                  }
+                },
+                "Location": {
+                  "schema": {
+                    "type": "string",
+                    "example": "/home;",
+                    "description": "Redirección del usuario al home del sitio"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Credenciales no válidas"
+            }
+          }
+        }
+      },
+      "/signup": {
+        "post": {
+          "summary": "Registra al usuario",
+          "description": "En base a un correo, contraseña y nombre, registra a un usuario retornándole una cookie y redireccionándole a otra URL",
+          "requestBody": {
+            "description": "Datos del usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "format": "email",
+                      "description": "Nombre del usuario",
+                      "example": "Jacinto"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "description": "Correo del usuario",
+                      "example": "profe@udp.cl"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "Contraseña del usuario",
+                      "example": "12345t6clave"
+                    }
+                  }
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "302": {
+              "description": "Successful operation",
+              "headers": {
+                "Set-Cookie": {
+                  "schema": {
+                    "type": "string",
+                    "example": "token=ercv8m923d4io3kmlf;",
+                    "description": "Token de autentificación"
+                  }
+                },
+                "Location": {
+                  "schema": {
+                    "type": "string",
+                    "example": "/home;",
+                    "description": "Redirección del usuario al home del sitio"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "El correo ya se encuentra en uso"
+            }
+          }
+        }
+      },
+      "/products": {
+        "get": {
+          "summary": "Lista los productos",
+          "description": "Lista todos los productos disponibles en la tienda",
+          "responses": {
+            "200": {
+              "description": "La lista de productos se ha obtenido exitósamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "Identificador único del producto",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Nombre del producto",
+                          "example": "Vamos ekipo"
+                        },
+                        "price": {
+                          "type": "number",
+                          "description": "Precio del producto",
+                          "example": 123456
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "URL de la imagen del producto",
+                          "example": "https://pbs.twimg.com/media/GABUcwXXQAATzV6.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/products/{id}": {
+        "get": {
+          "summary": "Retorna la info de un producto",
+          "description": "Retorna un producto de la tienda según su id",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "description": "Identificador único del producto",
+                "example": 1
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Producto obtenido exitósamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Identificador único del producto",
+                        "example": 1
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Nombre del producto",
+                        "example": "Vamos ekipo"
+                      },
+                      "price": {
+                        "type": "number",
+                        "description": "Precio del producto",
+                        "example": 123456
+                      },
+                      "image": {
+                        "type": "string",
+                        "description": "URL de la imagen del producto",
+                        "example": "https://pbs.twimg.com/media/GABUcwXXQAATzV6.jpg"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "El producto no existe en la base de datos"
+            }
+          }
+        }
+      },
+      "/admin/totalEarned": {
+        "get": {
+          "summary": "Total ganado por la tienda",
+          "description": "Retorna el total ganado por la tienda a administradores, no se puede usar por usuarios normales",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del administrador",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Se obtuvo el total ganado por la tienda exitósamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "total": {
+                        "type": "number",
+                        "description": "Total ganado por la tienda",
+                        "example": 1234569
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            },
+            "403": {
+              "description": "El usuario no tiene permisos para acceder a este endpoint"
+            }
+          }
+        }
+      },
+      "/admin/products/": {
+        "post": {
+          "summary": "Agrega un producto",
+          "description": "Agrega un producto a la tienda, solo admins pueden usarlo",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del administrador",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Datos del producto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Nombre del producto",
+                      "example": "Vamos ekipo"
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Precio del producto",
+                      "example": 123456
+                    },
+                    "image": {
+                      "type": "string",
+                      "description": "URL de la imagen del producto",
+                      "example": "https://pbs.twimg.com/media/GABUcwXXQAATzV6.jpg"
+                    }
+                  }
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Producto creado exitósamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Identificador único del producto",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            },
+            "403": {
+              "description": "El usuario no tiene permisos para acceder a este endpoint"
+            }
+          }
+        }
+      },
+      "/admin/products/{id}": {
+        "delete": {
+          "summary": "Elimina un producto",
+          "description": "Elimina un producto de la tienda según su id, solo admins pueden usarlo",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del administrador",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            },
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "description": "Identificador único del producto",
+                "example": 1
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Producto eliminado exitósamente"
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            },
+            "403": {
+              "description": "El usuario no tiene permisos para acceder a este endpoint"
+            },
+            "404": {
+              "description": "El producto no existe en la base de datos"
+            }
+          }
+        },
+        "post": {
+          "summary": "Modifica un producto",
+          "description": "Modifica un producto de la tienda según su id, solo admins pueden usarlo, no es necesario enviar todas las propiedades",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del administrador",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            },
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "description": "Identificador único del producto",
+                "example": 1
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Datos del producto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Nombre del producto",
+                      "example": "Vamos ekipo 2.0"
+                    },
+                    "price": {
+                      "type": "number",
+                      "description": "Precio del producto",
+                      "example": 1234
+                    },
+                    "image": {
+                      "type": "string",
+                      "description": "URL de la imagen del producto",
+                      "example": "https://pbs.twimg.com/media/GABUcwXXQAATzV6.jpg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Producto modificado exitósamente"
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            },
+            "403": {
+              "description": "El usuario no tiene permisos para acceder a este endpoint"
+            },
+            "404": {
+              "description": "El producto no existe en la base de datos"
+            }
+          }
+        }
+      },
+      "/shoppingcart": {
+        "get": {
+          "summary": "Muestra los productos del carrito",
+          "description": "Lista todos los productos que el usuario tiene en su carrito, indicando su cantidad",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del usuario",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "La lista de productos en el carro se ha obtenido exitósamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "Identificador único del producto",
+                          "example": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Nombre del producto",
+                          "example": "Vamos ekipo"
+                        },
+                        "price": {
+                          "type": "number",
+                          "description": "Precio del producto",
+                          "example": 123456
+                        },
+                        "image": {
+                          "type": "string",
+                          "description": "URL de la imagen del producto",
+                          "example": "https://pbs.twimg.com/media/GABUcwXXQAATzV6.jpg"
+                        },
+                        "quantity": {
+                          "type": "integer",
+                          "description": "Cantidad del producto en el carrito",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            }
+          }
+        }
+      },
+      "/shoppingcart/{productId}": {
+        "post": {
+          "summary": "Agrega un producto al carrito",
+          "description": "Agrega una unidad del producto indicado en la url al carrito del usuario",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del usuario",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            },
+            {
+              "in": "path",
+              "name": "productId",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "description": "Identificador único del producto",
+                "example": 1
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Producto agregado exitósamente"
+            },
+            "400": {
+              "description": "El producto no existe en la base de datos"
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Quita una unidad de un producto del carrito",
+          "description": "Reduce en 1 la cantidad de un producto del carrito, si la cantidad llega a 0, elimina el producto del carrito",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del usuario",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            },
+            {
+              "in": "path",
+              "name": "productId",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "description": "Identificador único del producto",
+                "example": 1
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Producto eliminado exitósamente"
+            },
+            "400": {
+              "description": "El producto no existe en el carrito"
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            }
+          }
+        }
+      },
+      "/purchase": {
+        "post": {
+          "summary": "Compra los productos",
+          "description": "Realiza una compra con los productos en el carrito del usuario, eliminando los productos del carrito y generando una compra en la base de datos",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del usuario",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Compra realizada exitósamente"
+            },
+            "400": {
+              "description": "El carrito se encuentra vacío"
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            }
+          }
+        }
+      },
+      "/profile": {
+        "get": {
+          "summary": "Muestra el perfil del usuario",
+          "description": "Muestra el perfil del usuario, incluyendo su nombre, correo y dinero en la wallet, más que nada para documentar en el fondo que el usuario tiene un perfil con todos los datos que podemos mostrar. Esto se usará en la Entrega 4.",
+          "parameters": [
+            {
+              "in": "cookie",
+              "name": "token",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Token de autentificación del usuario",
+                "example": "edrfvm890234i0szadfjkln34tun9"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Perfil obtenido exitósamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Nombre del usuario",
+                        "example": "Jacinto"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "Correo del usuario",
+                        "example": null
+                      },
+                      "money": {
+                        "type": "number",
+                        "description": "Saldo de la wallet",
+                        "example": 123456
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "El usuario no se encuentra autentificado"
+            }
+          }
+        }
+      }
+    }
+  },
+  "customOptions": {}
+};
+  url = options.swaggerUrl || url
+  var urls = options.swaggerUrls
+  var customOptions = options.customOptions
+  var spec1 = options.swaggerDoc
+  var swaggerOptions = {
+    spec: spec1,
+    url: url,
+    urls: urls,
+    dom_id: '#swagger-ui',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    layout: "StandaloneLayout"
+  }
+  for (var attrname in customOptions) {
+    swaggerOptions[attrname] = customOptions[attrname];
+  }
+  var ui = SwaggerUIBundle(swaggerOptions)
+
+  if (customOptions.oauth) {
+    ui.initOAuth(customOptions.oauth)
+  }
+
+  if (customOptions.preauthorizeApiKey) {
+    const key = customOptions.preauthorizeApiKey.authDefinitionKey;
+    const value = customOptions.preauthorizeApiKey.apiKeyValue;
+    if (!!key && !!value) {
+      const pid = setInterval(() => {
+        const authorized = ui.preauthorizeApiKey(key, value);
+        if(!!authorized) clearInterval(pid);
+      }, 500)
+
+    }
+  }
+
+  if (customOptions.authAction) {
+    ui.authActions.authorize(customOptions.authAction)
+  }
+
+  window.ui = ui
+}
